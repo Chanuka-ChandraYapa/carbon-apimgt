@@ -305,7 +305,6 @@ public class GatewayJMSMessageListener implements MessageListener, JMSConnection
         } else if (EventType.POLICY_RESET.toString().equals(eventType)) {
             PolicyResetEvent event = new Gson().fromJson(eventJson,PolicyResetEvent.class);
             publishResetEvent(event, eventJson);
-
         } else if (EventType.ENDPOINT_CERTIFICATE_ADD.toString().equals(eventType) ||
                 EventType.ENDPOINT_CERTIFICATE_REMOVE.toString().equals(eventType)) {
             CertificateEvent certificateEvent = new Gson().fromJson(eventJson, CertificateEvent.class);
@@ -433,8 +432,8 @@ public class GatewayJMSMessageListener implements MessageListener, JMSConnection
             subscriberTenantDomain = applicationEvent.getTenantDomain();
             applicationId = applicationEvent.getAppId();
 
-            authenticationContext.setUsername(applicationEvent.getUserId() + "@" + event.getTenantDomain());
-            authenticationContext.setApplicationId(applicationEvent.getAppId());
+//            authenticationContext.setUsername(applicationEvent.getUserId() + "@" + event.getTenantDomain());
+//            authenticationContext.setApplicationId(applicationEvent.getAppId());
             authenticationContext.setAuthenticated(true);
         } else if (event.getPolicyType() == PolicyType.SUBSCRIPTION) {
             SubscriptionPolicyResetEvent subscriptionEvent = new Gson().fromJson(eventJson, SubscriptionPolicyResetEvent.class);
@@ -446,7 +445,7 @@ public class GatewayJMSMessageListener implements MessageListener, JMSConnection
             apiTenantDomain = subscriptionEvent.getTenantDomain();
             applicationId = subscriptionEvent.getAppId();
 
-            authenticationContext.setApplicationId(subscriptionEvent.getAppId());
+//            authenticationContext.setApplicationId(subscriptionEvent.getAppId());
             authenticationContext.setAuthenticated(true);
         } else if (event.getPolicyType() == PolicyType.API) {
             if (!event.getIsResourceLevel()){
@@ -486,24 +485,19 @@ public class GatewayJMSMessageListener implements MessageListener, JMSConnection
 
     private static MessageContext getMessageContext() {
         SynapseConfiguration synCfg = new SynapseConfiguration();
+        SOAPFactory factory = OMAbstractFactory.getSOAP11Factory();
+        SOAPEnvelope defaultEnvelope = factory.getDefaultEnvelope();
         org.apache.axis2.context.MessageContext axisMsgCtx;
         try {
             axisMsgCtx = GatewayUtils.createAxis2MessageContext();
-        } catch (AxisFault e) {
-            throw new RuntimeException(e);
-        }
-        AxisConfiguration axisConfig = new AxisConfiguration();
-        ConfigurationContext cfgCtx = new ConfigurationContext(axisConfig);
-        org.apache.axis2.context.MessageContext.setCurrentMessageContext(axisMsgCtx);
-        SOAPFactory factory = OMAbstractFactory.getSOAP11Factory();
-        SOAPEnvelope defaultEnvelope = factory.getDefaultEnvelope();
-        try {
             axisMsgCtx.setEnvelope(defaultEnvelope);
         } catch (AxisFault e) {
             throw new RuntimeException(e);
         }
-        MessageContext synCtx = new Axis2MessageContext(axisMsgCtx, synCfg, null);
-        return synCtx;
+//        AxisConfiguration axisConfig = new AxisConfiguration();
+//        ConfigurationContext cfgCtx = new ConfigurationContext(axisConfig);
+//        org.apache.axis2.context.MessageContext.setCurrentMessageContext(axisMsgCtx);
+        return new Axis2MessageContext(axisMsgCtx, synCfg, null);
     }
 
     private void endTenantFlow() {
