@@ -4098,10 +4098,7 @@ public class APIConsumerImpl extends AbstractAPIManager implements APIConsumer {
      */
     @Override
     public void resetApplicationThrottlePolicy(String appId, String userId, String appTier, String organization) throws APIManagementException{
-//        try {
-//            UUID.fromString(userId);
-//        } catch (IllegalArgumentException e) {
-//        }
+
         try {
             String userDomain = MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
             String userIdWithoutTenant = userId;

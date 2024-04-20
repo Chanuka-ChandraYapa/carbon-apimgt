@@ -303,7 +303,7 @@ public class GatewayJMSMessageListener implements MessageListener, JMSConnection
                 }
             }
         } else if (EventType.POLICY_RESET.toString().equals(eventType)) {
-            PolicyResetEvent event = new Gson().fromJson(eventJson,PolicyResetEvent.class);
+            PolicyEvent event = new Gson().fromJson(eventJson,PolicyEvent.class);
             publishResetEvent(event, eventJson);
         } else if (EventType.ENDPOINT_CERTIFICATE_ADD.toString().equals(eventType) ||
                 EventType.ENDPOINT_CERTIFICATE_REMOVE.toString().equals(eventType)) {
@@ -405,7 +405,7 @@ public class GatewayJMSMessageListener implements MessageListener, JMSConnection
         }
     }
 
-    private void publishResetEvent(PolicyResetEvent event, String eventJson) {
+    private void publishResetEvent(PolicyEvent event, String eventJson) {
         String applicationLevelThrottleKey = null;
         String applicationLevelTier = null;
         String authorizedUser = null;
